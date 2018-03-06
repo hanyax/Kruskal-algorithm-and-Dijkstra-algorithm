@@ -120,7 +120,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     
     
     @Override
-    public void remove(T item) {
+    public void remove(T item) throws UnsupportedOperationException {
         // TODO Auto-generated method stub
     }
 }
