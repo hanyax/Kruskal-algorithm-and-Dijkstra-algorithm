@@ -129,6 +129,7 @@ public class TestGraph extends BaseTest {
 
     }
     
+    // Self made graph
     public Graph<String, SimpleEdge<String>> buildSimpleGraph2() {
         IList<String> vertices = new DoubleLinkedList<>();
         vertices.add("a");
@@ -139,7 +140,7 @@ public class TestGraph extends BaseTest {
         vertices.add("f");
 
         IList<SimpleEdge<String>> edges = new DoubleLinkedList<>();
-        edges.add(edge("a", "b", 2));
+        edges.add(edge("a", "d", 2));
         edges.add(edge("a", "e", 1));
         edges.add(edge("a", "b", 10));
 
@@ -154,7 +155,23 @@ public class TestGraph extends BaseTest {
         edges.add(edge("e", "f", 7));
 
         return new Graph<>(vertices, edges);
+    }
+    
+    // Self made graph
+    public Graph<String, SimpleEdge<String>> buildSimpleGraph3() {
+        IList<String> vertices = new DoubleLinkedList<>();
+        vertices.add("a");
+        vertices.add("b");
+        vertices.add("d");
+        vertices.add("e");
 
+        IList<SimpleEdge<String>> edges = new DoubleLinkedList<>();
+        edges.add(edge("a", "d", 2));
+        edges.add(edge("a", "e", 1));
+        edges.add(edge("a", "b", 10));
+        edges.add(edge("b", "e", 8));
+        
+        return new Graph<>(vertices, edges);
     }
 
     public Graph<String, SimpleEdge<String>> buildComplexGraph() {
@@ -315,8 +332,9 @@ public class TestGraph extends BaseTest {
         checkPathMatches(graph, 12, new String[] {"f", "d", "a", "c"});
         */
         Graph<String, SimpleEdge<String>> graph = this.buildSimpleGraph2();
-
-        checkPathMatches(graph, 8, new String[] {"a", "e", "f"});
+       
+        checkPathMatches(graph, 13, new String[] {"a", "e", "b", "c"});
+        
     }
 
     @Test(timeout=SECOND)

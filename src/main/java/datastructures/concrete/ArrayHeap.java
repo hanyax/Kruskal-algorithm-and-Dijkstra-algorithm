@@ -122,7 +122,6 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     public void remove(T item) {
         if (size != 0) {
             int index = exist(item);
-            System.out.println(item.toString());
             if (index != -1) {
                 heap[index] = heap[size - 1];
                 size--;

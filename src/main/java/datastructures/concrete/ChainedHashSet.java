@@ -48,6 +48,16 @@ public class ChainedHashSet<T> implements ISet<T> {
     public Iterator<T> iterator() {
         return new SetIterator<>(this.map.iterator());
     }
+    
+    @Override
+    public String toString() {
+        String result = "Set = ";
+        Iterator<T> iter = this.iterator();
+        while (iter.hasNext()) {
+            result += (" - " + iter.next().toString());
+        }
+        return result;
+    }
 
     private static class SetIterator<T> implements Iterator<T> {
         // This should be the only field you need

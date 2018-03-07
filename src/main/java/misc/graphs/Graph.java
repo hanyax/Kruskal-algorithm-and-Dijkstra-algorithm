@@ -85,6 +85,7 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
                 throw new IllegalArgumentException("Vertice is not in the graph");
             }
             graph.get(edge.getVertex1()).add(edge);
+            graph.get(edge.getVertex2()).add(edge);
         }
         this.vertices = vertices;
         this.edges = edges;
@@ -235,28 +236,30 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
             
             if (!visited.contains(current)) {
                 visited.add(current);
-              
+                
+                System.out.println(visited); //!!!!!
+                
                 for (E edge : this.graph.get(current)) {
-                    // System.out.println(edge.toString() + "!!!" + this.graph.get(current).size());
-                    
                     V dest = edge.getOtherVertex(current);
                     if (!visited.contains(dest)) {
                         double newCost = cost.get(current) + edge.getWeight();
-                        
-                        // System.out.println(cost.get(dest) + "Cost!!!" + newCost);
-                        
                         if (newCost < cost.get(dest)) {
-                            heap.remove(new Vertex(dest, cost.get(dest))); // removeOld
+                            heap.remove(new Vertex(dest, cost.get(dest)));
                             heap.insert(new Vertex(dest, newCost));
                             cost.put(dest, newCost);
+                            if (current.equals(start)) {
+                                edgesFromStartV.put(current, new DoubleLinkedList<E>());
+                            }
                             edgesFromStartV.put(dest, edgesFromStartV.get(current));
                             edgesFromStartV.get(dest).add(edge);
-                            
-                            // System.out.println("!!!");
+                            System.out.println(current + "->" + dest + ": " + edgesFromStartV.get(dest)); //!!!!
                         }
                     }
-                }                
+                }   
+                System.out.println(); ///  !!!!
             }
+            
+            //System.out.println(current + ": edges:   " + edgesFromStartV.get(current));
         }
         return null;
     }
