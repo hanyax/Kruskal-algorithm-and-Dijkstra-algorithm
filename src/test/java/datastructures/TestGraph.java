@@ -128,6 +128,34 @@ public class TestGraph extends BaseTest {
         return new Graph<>(vertices, edges);
 
     }
+    
+    public Graph<String, SimpleEdge<String>> buildSimpleGraph2() {
+        IList<String> vertices = new DoubleLinkedList<>();
+        vertices.add("a");
+        vertices.add("b");
+        vertices.add("c");
+        vertices.add("d");
+        vertices.add("e");
+        vertices.add("f");
+
+        IList<SimpleEdge<String>> edges = new DoubleLinkedList<>();
+        edges.add(edge("a", "b", 2));
+        edges.add(edge("a", "e", 1));
+        edges.add(edge("a", "b", 10));
+
+        edges.add(edge("b", "e", 8));
+        edges.add(edge("b", "f", 2));
+        edges.add(edge("b", "c", 4));
+
+        edges.add(edge("c", "f", 8));
+
+        edges.add(edge("d", "e", 0));
+        
+        edges.add(edge("e", "f", 7));
+
+        return new Graph<>(vertices, edges);
+
+    }
 
     public Graph<String, SimpleEdge<String>> buildComplexGraph() {
         IList<String> vertices = new DoubleLinkedList<>();
@@ -278,12 +306,17 @@ public class TestGraph extends BaseTest {
 
     @Test(timeout=SECOND)
     public void testFindingShortestPathSimple() {
+        /*
         Graph<String, SimpleEdge<String>> graph = this.buildSimpleGraph();
 
         checkPathMatches(graph, 7, new String[] {"a", "d", "f"});
         checkPathMatches(graph, 7, new String[] {"f", "d", "a"});
         checkPathMatches(graph, 12, new String[] {"c", "a", "d", "f"});
         checkPathMatches(graph, 12, new String[] {"f", "d", "a", "c"});
+        */
+        Graph<String, SimpleEdge<String>> graph = this.buildSimpleGraph2();
+
+        checkPathMatches(graph, 8, new String[] {"a", "e", "f"});
     }
 
     @Test(timeout=SECOND)

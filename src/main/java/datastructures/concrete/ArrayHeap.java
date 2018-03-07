@@ -119,9 +119,10 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     }
     
     @Override
-    public void remove(T item) throws UnsupportedOperationException {
+    public void remove(T item) {
         if (size != 0) {
             int index = exist(item);
+            System.out.println(item.toString());
             if (index != -1) {
                 heap[index] = heap[size - 1];
                 size--;
@@ -131,7 +132,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     } 
     
     private int exist(T item) {
-        for (int i = 0; i < heap.length; i++) {
+        for (int i = 0; i < size; i++) {
             if (heap[i].equals(item)) {
                 return i;
             }

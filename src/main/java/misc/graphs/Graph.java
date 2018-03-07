@@ -85,7 +85,6 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
                 throw new IllegalArgumentException("Vertice is not in the graph");
             }
             graph.get(edge.getVertex1()).add(edge);
-            graph.get(edge.getVertex2()).add(edge);
         }
         this.vertices = vertices;
         this.edges = edges;
@@ -219,8 +218,8 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
             cost.put(v, Double.POSITIVE_INFINITY);
             edgesFromStartV.put(v, new DoubleLinkedList<E>());
         }
+           
         ISet<V> visited = new ChainedHashSet<V>();
-        
         IPriorityQueue<Vertex> heap = new ArrayHeap<Vertex>();
         heap.insert(new Vertex(start, 0.0));
         cost.put(start, 0.0);
@@ -228,21 +227,23 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
         while(!heap.isEmpty()) {
             Vertex v = heap.removeMin();
             V current = v.getVertex();
-            System.out.println(current); //debug
+            System.out.println(current + "Cur");
             
             if (current.equals(end)) {
                 return edgesFromStartV.get(current);
             }
+            
             if (!visited.contains(current)) {
                 visited.add(current);
               
                 for (E edge : this.graph.get(current)) {
-                    V dest = edge.getOtherVertex(current);
-                    System.out.println(dest); //debug
+                    // System.out.println(edge.toString() + "!!!" + this.graph.get(current).size());
                     
+                    V dest = edge.getOtherVertex(current);
                     if (!visited.contains(dest)) {
-                        visited.add(dest);
                         double newCost = cost.get(current) + edge.getWeight();
+                        
+                        // System.out.println(cost.get(dest) + "Cost!!!" + newCost);
                         
                         if (newCost < cost.get(dest)) {
                             heap.remove(new Vertex(dest, cost.get(dest))); // removeOld
@@ -250,9 +251,11 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
                             cost.put(dest, newCost);
                             edgesFromStartV.put(dest, edgesFromStartV.get(current));
                             edgesFromStartV.get(dest).add(edge);
+                            
+                            // System.out.println("!!!");
                         }
                     }
-                }
+                }                
             }
         }
         return null;
@@ -288,6 +291,9 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
             return this.vertex.equals(o.vertex);
         }
         
-
+        public String toString() {
+            return ("" + this.vertex.toString() + "   " + this.cost);
+        }
+       
     }
 }

@@ -295,6 +295,16 @@ public class DoubleLinkedList<T> implements IList<T> {
         // of this file. You do not need to change this method.
         return new DoubleLinkedListIterator<>(this.front);
     }
+    
+    @Override
+    public String toString() {
+        String result = "Result = ";
+        Iterator<T> iter = this.iterator();
+        while (iter.hasNext()) {
+            result += (" - " + iter.next().toString());
+        }
+        return result;
+    }
 
     private static class Node<E> {
         // You may not change the fields in this node or add any new fields.
