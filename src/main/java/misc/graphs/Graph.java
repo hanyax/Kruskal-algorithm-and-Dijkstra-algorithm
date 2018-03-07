@@ -1,7 +1,15 @@
 package misc.graphs;
 
+import java.util.Iterator;
+
+import datastructures.concrete.ArrayDisjointSet;
+import datastructures.concrete.ArrayHeap;
+import datastructures.concrete.ChainedHashSet;
 import datastructures.concrete.DoubleLinkedList;
+import datastructures.concrete.dictionaries.ChainedHashDictionary;
+import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
+import datastructures.interfaces.IPriorityQueue;
 import datastructures.interfaces.ISet;
 import misc.exceptions.NoPathExistsException;
 import misc.exceptions.NotYetImplementedException;
@@ -51,7 +59,11 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
     //
     // Working with generics is really not the focus of this class, so if you
     // get stuck, let us know we'll try and help you get unstuck as best as we can.
-
+    
+    IDictionary<V, ChainedHashSet<E>> graph;
+    IList<V> vertices;
+    IList<E> edges;
+    
     /**
      * Constructs a new graph based on the given vertices and edges.
      *
@@ -61,6 +73,22 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
      */
     public Graph(IList<V> vertices, IList<E> edges) {
         // TODO: Your code here
+        this.graph = new ChainedHashDictionary<V, ChainedHashSet<E>>();
+        for (V vertice : vertices) {
+            graph.put(vertice, new ChainedHashSet<E>());
+        }
+        for (E edge :edges ) {
+            if (edge.getWeight() < 0) {
+                throw new IllegalArgumentException("The vertice weight is less than 0");
+            }
+            if (!graph.containsKey(edge.getVertex1()) || !graph.containsKey(edge.getVertex2())) {
+                throw new IllegalArgumentException("Vertice is not in the graph");
+            }
+            graph.get(edge.getVertex1()).add(edge);
+            graph.get(edge.getVertex2()).add(edge);
+        }
+        this.vertices = vertices;
+        this.edges = edges;
     }
 
     /**
@@ -87,14 +115,14 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
      * Returns the number of vertices contained within this graph.
      */
     public int numVertices() {
-        throw new NotYetImplementedException();
+        return this.vertices.size();
     }
 
     /**
      * Returns the number of edges contained within this graph.
      */
     public int numEdges() {
-        throw new NotYetImplementedException();
+        return this.edges.size();
     }
 
     /**
@@ -106,7 +134,62 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
      * Precondition: the graph does not contain any unconnected components.
      */
     public ISet<E> findMinimumSpanningTree() {
-        throw new NotYetImplementedException();
+        ISet<E> mst = new ChainedHashSet<E>();
+        
+        ArrayDisjointSet<V> mstFinder = new ArrayDisjointSet<V>();
+        for (V v: this.vertices) {
+            mstFinder.makeSet(v);
+        }
+        
+        IList<E> sortedEdges = topKSort(this.numEdges(), this.edges);
+        
+        for (E edge : sortedEdges) {
+            if (mstFinder.findSet(edge.getVertex1()) != mstFinder.findSet(edge.getVertex2())) {
+                mstFinder.union(edge.getVertex1(), edge.getVertex2());
+                mst.add(edge);
+            }
+        }
+        return mst;
+    }
+    
+    private static <T extends Comparable<T>> IList<T> topKSort(int k, IList<T> input) {
+        // Implementation notes:
+        //
+        // - This static method is a _generic method_. A generic method is similar to
+        //   the generic methods we covered in class, except that the generic parameter
+        //   is used only within this method.
+        //
+        //   You can implement a generic method in basically the same way you implement
+        //   generic classes: just use the 'T' generic type as if it were a regular type.
+        //
+        // - You should implement this method by using your ArrayHeap for the sake of
+        //   efficiency.
+        if (k < 0) {
+                throw new IllegalArgumentException("K can not be negeative number");
+            } else if (k == 0) {
+                return new DoubleLinkedList<T>();
+            } else {
+                IPriorityQueue<T> sortHeap = new ArrayHeap<T>(); 
+                if (input.size() < k) {
+                    k = input.size();
+                }
+                Iterator<T> iter = input.iterator();
+                for (int i = 0; i < k; i++) {
+                    sortHeap.insert(iter.next());
+                }
+                for (int i = k; i < input.size(); i++) {
+                    T element = iter.next();
+                    if (element.compareTo(sortHeap.peekMin()) > 0) {
+                        sortHeap.insert(element);
+                        sortHeap.removeMin();
+                    }
+                }
+                IList<T> result = new DoubleLinkedList<T>();
+                for (int i = 0; i < k; i++) {
+                    result.add(sortHeap.removeMin());
+                }
+                return result;
+            }
     }
 
     /**
