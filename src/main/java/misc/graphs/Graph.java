@@ -205,6 +205,89 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
      * @throws NoPathExistsException  if there does not exist a path from the start to the end
      */
     public IList<E> findShortestPathBetween(V start, V end) {
-        throw new NotYetImplementedException();
+        IList<E> result = findShortestPathBetweenHelper(start, end);
+        if (result == null) {
+            throw new NoPathExistsException();
+        }
+        return result;
+    }
+    
+    private IList<E> findShortestPathBetweenHelper(V start, V end) {
+        IDictionary<V, DoubleLinkedList<E>> edgesFromStartV = new ChainedHashDictionary<V, DoubleLinkedList<E>>();
+        IDictionary<V, Double> cost = new ChainedHashDictionary<V, Double>();
+        for (V v : this.vertices) {
+            cost.put(v, Double.POSITIVE_INFINITY);
+            edgesFromStartV.put(v, new DoubleLinkedList<E>());
+        }
+        ISet<V> visited = new ChainedHashSet<V>();
+        
+        IPriorityQueue<Vertex> heap = new ArrayHeap<Vertex>();
+        heap.insert(new Vertex(start, 0.0));
+        cost.put(start, 0.0);
+        
+        while(!heap.isEmpty()) {
+            Vertex v = heap.removeMin();
+            V current = v.getVertex();
+            System.out.println(current); //debug
+            
+            if (current.equals(end)) {
+                return edgesFromStartV.get(current);
+            }
+            if (!visited.contains(current)) {
+                visited.add(current);
+              
+                for (E edge : this.graph.get(current)) {
+                    V dest = edge.getOtherVertex(current);
+                    System.out.println(dest); //debug
+                    
+                    if (!visited.contains(dest)) {
+                        visited.add(dest);
+                        double newCost = cost.get(current) + edge.getWeight();
+                        
+                        if (newCost < cost.get(dest)) {
+                            heap.remove(new Vertex(dest, cost.get(dest))); // removeOld
+                            heap.insert(new Vertex(dest, newCost));
+                            cost.put(dest, newCost);
+                            edgesFromStartV.put(dest, edgesFromStartV.get(current));
+                            edgesFromStartV.get(dest).add(edge);
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    private class Vertex implements Comparable<Vertex> {
+        private V vertex;
+        private Double cost;
+        
+        public Vertex(V vertex, double cost) {
+            this.vertex = vertex;
+            this.cost = cost;
+        }
+        
+        public V getVertex() {
+            return this.vertex;
+        }
+        
+        public double getCost() {
+            return this.cost;
+        }
+        
+        public void setCost(double cost) {
+            this.cost = cost;
+        }
+        
+        @Override
+        public int compareTo(Graph<V, E>.Vertex o) {
+            return (this.cost.compareTo(o.cost));
+        }
+        
+        public boolean equals(Graph<V, E>.Vertex o) {
+            return this.vertex.equals(o.vertex);
+        }
+        
+
     }
 }

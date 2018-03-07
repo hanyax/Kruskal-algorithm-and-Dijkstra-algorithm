@@ -27,6 +27,7 @@ public class KruskalMazeCarver implements MazeCarver {
         for (Wall wall:walls) {
             wall.setDistance(wall.getDistance() * rand.nextInt(100000));
         }
+        
         Graph<Room, Wall> mazeGraph = new Graph<Room, Wall>(rooms, walls);
         return mazeGraph.findMinimumSpanningTree();
     }

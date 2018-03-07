@@ -118,9 +118,24 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         return this.size;
     }
     
-    
     @Override
     public void remove(T item) throws UnsupportedOperationException {
-        // TODO Auto-generated method stub
+        if (size != 0) {
+            int index = exist(item);
+            if (index != -1) {
+                heap[index] = heap[size - 1];
+                size--;
+                this.removeMinHelper(index);
+            }
+        }
+    } 
+    
+    private int exist(T item) {
+        for (int i = 0; i < heap.length; i++) {
+            if (heap[i].equals(item)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
