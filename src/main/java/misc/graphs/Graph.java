@@ -209,6 +209,9 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
         if (result == null) {
             throw new NoPathExistsException();
         }
+        
+        System.out.println(result);
+        
         return result;
     }
     
@@ -228,7 +231,6 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
         while(!heap.isEmpty()) {
             Vertex v = heap.removeMin();
             V current = v.getVertex();
-            System.out.println(current + "Cur");
             
             if (current.equals(end)) {
                 return edgesFromStartV.get(current);
@@ -236,13 +238,13 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
             
             if (!visited.contains(current)) {
                 visited.add(current);
-                
-                System.out.println(visited); //!!!!!
-                
+                System.out.println(current + "Cur");
+                System.out.println("Current edges: " + edgesFromStartV.get(current));
                 for (E edge : this.graph.get(current)) {
                     V dest = edge.getOtherVertex(current);
                     if (!visited.contains(dest)) {
                         double newCost = cost.get(current) + edge.getWeight();
+                        System.out.println(current + " -> " + dest + " New cost: " + newCost + " Current cost: " + cost.get(dest));
                         if (newCost < cost.get(dest)) {
                             heap.remove(new Vertex(dest, cost.get(dest)));
                             heap.insert(new Vertex(dest, newCost));
@@ -250,21 +252,28 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
                             if (current.equals(start)) {
                                 edgesFromStartV.put(current, new DoubleLinkedList<E>());
                             }
-                            edgesFromStartV.put(dest, edgesFromStartV.get(current));
+                            
+                            // Copy current node's path to new node's path
+                            IList<E> destNewEdges = new DoubleLinkedList<E>();
+                            Iterator<E> iter =  edgesFromStartV.get(current).iterator(); 
+                            while(iter.hasNext()) {
+                                destNewEdges.add(iter.next());
+                            }
+                            
+                            edgesFromStartV.put(dest, (DoubleLinkedList<E>) destNewEdges);
                             edgesFromStartV.get(dest).add(edge);
-                            System.out.println(current + "->" + dest + ": " + edgesFromStartV.get(dest)); //!!!!
+                            System.out.println(current + " -> " + dest + " Dest edges:" + edgesFromStartV.get(dest)); //!!!!
+                            System.out.println();
                         }
                     }
                 }   
-                System.out.println(); ///  !!!!
+                System.out.println(); 
             }
-            
-            //System.out.println(current + ": edges:   " + edgesFromStartV.get(current));
         }
         return null;
     }
     
-    private class Vertex implements Comparable<Vertex> {
+    private class Vertex implements Comparable<Vertex> extends object{
         private V vertex;
         private Double cost;
         
@@ -277,10 +286,12 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
             return this.vertex;
         }
         
+        @SuppressWarnings("unused")
         public double getCost() {
             return this.cost;
         }
         
+        @SuppressWarnings("unused")
         public void setCost(double cost) {
             this.cost = cost;
         }
@@ -290,6 +301,7 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
             return (this.cost.compareTo(o.cost));
         }
         
+        @Override
         public boolean equals(Graph<V, E>.Vertex o) {
             return this.vertex.equals(o.vertex);
         }

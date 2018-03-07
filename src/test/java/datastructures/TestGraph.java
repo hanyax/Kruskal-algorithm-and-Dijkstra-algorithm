@@ -323,18 +323,15 @@ public class TestGraph extends BaseTest {
 
     @Test(timeout=SECOND)
     public void testFindingShortestPathSimple() {
-        /*
         Graph<String, SimpleEdge<String>> graph = this.buildSimpleGraph();
 
         checkPathMatches(graph, 7, new String[] {"a", "d", "f"});
         checkPathMatches(graph, 7, new String[] {"f", "d", "a"});
         checkPathMatches(graph, 12, new String[] {"c", "a", "d", "f"});
         checkPathMatches(graph, 12, new String[] {"f", "d", "a", "c"});
-        */
-        Graph<String, SimpleEdge<String>> graph = this.buildSimpleGraph2();
-       
-        checkPathMatches(graph, 13, new String[] {"a", "e", "b", "c"});
         
+        Graph<String, SimpleEdge<String>> graph2 = this.buildSimpleGraph2();
+        checkPathMatches(graph2, 13, new String[] {"a", "e", "b", "c"});
     }
 
     @Test(timeout=SECOND)

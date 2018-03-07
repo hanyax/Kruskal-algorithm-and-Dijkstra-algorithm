@@ -298,7 +298,7 @@ public class DoubleLinkedList<T> implements IList<T> {
     
     @Override
     public String toString() {
-        String result = "Result = ";
+        String result = "List --> ";
         Iterator<T> iter = this.iterator();
         while (iter.hasNext()) {
             result += (" - " + iter.next().toString());
