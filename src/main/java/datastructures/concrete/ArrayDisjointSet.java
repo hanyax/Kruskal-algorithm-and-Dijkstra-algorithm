@@ -6,7 +6,6 @@ import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IDisjointSet;
 import datastructures.interfaces.IList;
-import misc.exceptions.NotYetImplementedException;
 
 /**
  * See IDisjointSet for more details.
@@ -33,7 +32,6 @@ public class ArrayDisjointSet<T> implements IDisjointSet<T> {
      *
      * Note that each element in the array will initially be null.
      */
-    @SuppressWarnings("unchecked")
     private int[] makeArrayOfT(int arraySize) {
         // This helper method is basically the same one we gave you
         // in ArrayDictionary and ChainedHashDictionary.
@@ -43,9 +41,8 @@ public class ArrayDisjointSet<T> implements IDisjointSet<T> {
         return new int[arraySize];
     }
     
-    @SuppressWarnings("unchecked")
     private void ensureCapacity(int newRep) {
-            if ( newRep >= this.pointers.length) {
+            if (newRep >= this.pointers.length) {
             int[] newSet = new int[this.pointers.length * 2];
                 for (int i = 0; i < this.pointers.length; i++) {
                     newSet[i] = pointers[i];
@@ -69,7 +66,7 @@ public class ArrayDisjointSet<T> implements IDisjointSet<T> {
     @Override
     public int findSet(T item) {
         if (repItemLookup.containsKey(item)) {
-            DoubleLinkedList<Integer> links = new DoubleLinkedList<Integer>();
+            IList<Integer> links = new DoubleLinkedList<Integer>();
             findSetHelper(repItemLookup.get(item), links);
             int root = links.get(links.size() - 1);
             int i = 0;
@@ -84,7 +81,7 @@ public class ArrayDisjointSet<T> implements IDisjointSet<T> {
         }
     }
     
-    private void findSetHelper(int rep, DoubleLinkedList<Integer> nextLink) {
+    private void findSetHelper(int rep, IList<Integer> nextLink) {
         nextLink.add(rep);
         if (pointers[rep] >= 0) {
             findSetHelper(pointers[rep], nextLink);

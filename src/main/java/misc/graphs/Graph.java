@@ -12,7 +12,6 @@ import datastructures.interfaces.IList;
 import datastructures.interfaces.IPriorityQueue;
 import datastructures.interfaces.ISet;
 import misc.exceptions.NoPathExistsException;
-import misc.exceptions.NotYetImplementedException;
 
 /**
  * Represents an undirected, weighted graph, possibly containing self-loops, parallel edges,
@@ -72,12 +71,11 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
      *                                   present in the 'vertices' list
      */
     public Graph(IList<V> vertices, IList<E> edges) {
-        // TODO: Your code here
         this.graph = new ChainedHashDictionary<V, ChainedHashSet<E>>();
         for (V vertice : vertices) {
             graph.put(vertice, new ChainedHashSet<E>());
         }
-        for (E edge :edges ) {
+        for (E edge :edges) {
             if (edge.getWeight() < 0) {
                 throw new IllegalArgumentException("The vertice weight is less than 0");
             }
@@ -209,9 +207,7 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
         if (result == null) {
             throw new NoPathExistsException();
         }
-        
-        System.out.println(result);
-        
+        //System.out.println(result);
         return result;
     }
     
@@ -228,23 +224,23 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
         heap.insert(new Vertex(start, 0.0));
         cost.put(start, 0.0);
         
-        while(!heap.isEmpty()) {
+        while (!heap.isEmpty()) {
             Vertex v = heap.removeMin();
             V current = v.getVertex();
-            
             if (current.equals(end)) {
                 return edgesFromStartV.get(current);
             }
-            
             if (!visited.contains(current)) {
                 visited.add(current);
-                System.out.println(current + "Cur");
-                System.out.println("Current edges: " + edgesFromStartV.get(current));
+                // System.out.println(current + "Cur");
+                // System.out.println("Current edges: " + edgesFromStartV.get(current));
                 for (E edge : this.graph.get(current)) {
                     V dest = edge.getOtherVertex(current);
                     if (!visited.contains(dest)) {
                         double newCost = cost.get(current) + edge.getWeight();
-                        System.out.println(current + " -> " + dest + " New cost: " + newCost + " Current cost: " + cost.get(dest));
+                        /* System.out.println(current + " -> " + dest + " New cost: " + 
+                         * newCost + " Current cost: " + cost.get(dest)); 
+                         */
                         if (newCost < cost.get(dest)) {
                             heap.remove(new Vertex(dest, cost.get(dest)));
                             heap.insert(new Vertex(dest, newCost));
@@ -252,22 +248,22 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
                             if (current.equals(start)) {
                                 edgesFromStartV.put(current, new DoubleLinkedList<E>());
                             }
-                            
                             // Copy current node's path to new node's path
                             IList<E> destNewEdges = new DoubleLinkedList<E>();
                             Iterator<E> iter =  edgesFromStartV.get(current).iterator(); 
-                            while(iter.hasNext()) {
+                            while (iter.hasNext()) {
                                 destNewEdges.add(iter.next());
                             }
-                            
                             edgesFromStartV.put(dest, (DoubleLinkedList<E>) destNewEdges);
                             edgesFromStartV.get(dest).add(edge);
-                            System.out.println(current + " -> " + dest + " Dest edges:" + edgesFromStartV.get(dest)); //!!!!
-                            System.out.println();
+                            /*System.out.println(current + " -> " + dest + " Dest edges:" 
+                             * + edgesFromStartV.get(dest)); 
+                             */
+                            //System.out.println();
                         }
                     }
                 }   
-                System.out.println(); 
+                //System.out.println(); 
             }
         }
         return null;
@@ -301,11 +297,16 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
             return (this.cost.compareTo(o.cost));
         }
         
-        @Override
         @SuppressWarnings("unchecked")
+        @Override
         public boolean equals(Object obj) {
             Vertex o = (Vertex) obj;
             return this.vertex.equals(o.vertex);
+        }
+        
+        @Override
+        public int hashCode() {
+            return this.vertex.hashCode();
         }
         
         public String toString() {
