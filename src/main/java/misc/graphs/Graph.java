@@ -273,7 +273,7 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
         return null;
     }
     
-    private class Vertex implements Comparable<Vertex> extends object{
+    private class Vertex implements Comparable<Vertex> {
         private V vertex;
         private Double cost;
         
@@ -302,7 +302,9 @@ public class Graph<V, E extends Edge<V> & Comparable<E>> {
         }
         
         @Override
-        public boolean equals(Graph<V, E>.Vertex o) {
+        @SuppressWarnings("unchecked")
+        public boolean equals(Object obj) {
+            Vertex o = (Vertex) obj;
             return this.vertex.equals(o.vertex);
         }
         
